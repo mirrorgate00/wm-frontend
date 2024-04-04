@@ -14,24 +14,21 @@
                 <input
                   type="text"
                   class="form-control"
-                  id="firs-tname"
+                  id="first-name"
                   placeholder="Имя"
-                  v-model="state.firstName"
+                  v-model="user.firstName"
                 />
                 <InputErrorShow
                   v-bind:validation-obj="v$.firstName"
                 ></InputErrorShow>
               </div>
-              <div
-                class="col-sm-6 mb-3"
-                v-bind:class="{ error: v$.lastName.$errors.length }"
-              >
+              <div class="col-sm-6 mb-3">
                 <input
                   type="text"
                   class="form-control"
                   id="last-name"
                   placeholder="Фамилия"
-                  v-model="state.lastName"
+                  v-model="user.lastName"
                 />
                 <InputErrorShow
                   v-bind:validation-obj="v$.lastName"
@@ -39,7 +36,7 @@
               </div>
             </div>
 
-            <div class="mb-3" v-bind:class="{ error: v$.email.$errors.length }">
+            <div class="mb-3">
               <input
                 type="email"
                 autocomplete="email"
@@ -47,7 +44,7 @@
                 id="email"
                 aria-describedby="emailHelp"
                 placeholder="Электронная почта"
-                v-model="state.email"
+                v-model="user.email"
               />
               <InputErrorShow v-bind:validation-obj="v$.email"></InputErrorShow>
             </div>
@@ -58,7 +55,7 @@
                   class="form-control"
                   id="password"
                   placeholder="Пароль"
-                  v-model="state.password"
+                  v-model="user.password"
                 />
                 <InputErrorShow
                   v-bind:validation-obj="v$.password"
@@ -70,7 +67,7 @@
                   class="form-control"
                   id="confirm-password"
                   placeholder="Повторите пароль"
-                  v-model="state.confirmPassword"
+                  v-model="user.confirmPassword"
                 />
                 <InputErrorShow
                   v-bind:validation-obj="v$.confirmPassword"
@@ -95,16 +92,17 @@
       </div>
     </div>
   </div>
+  <div>{{ v$.$errors }}</div>
 </template>
 
 <script setup>
 import InputErrorShow from '../components/InputErrorShow.vue'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
-import { email, sameAs, minLength } from '@vuelidate/validators'
-import { required$ } from '../helpers/validators.js'
+import { email, minLength } from '@vuelidate/validators'
+import { required$, sameAs$ } from '../helpers/validators.js'
 
-const state = ref({
+const user = ref({
   firstName: '',
   lastName: '',
   email: '',
@@ -119,11 +117,11 @@ const rules = {
   password: { required$, minLength: minLength(6) },
   confirmPassword: {
     required$,
-    sameAsPassword: sameAs(state.value.password)
+    sameAsPassword: sameAs$(computed(() => user.value.password))
   }
 }
 
-const v$ = useVuelidate(rules, state, { $lazy: true, $autoDirty: true })
+const v$ = useVuelidate(rules, user, { $lazy: true, $autoDirty: true })
 
 async function submitForm() {
   const formIsCorrect = await this.v$.$validate()
