@@ -1,7 +1,14 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="#">
+        <img
+          src=".//../assets/locked-chest_39032.png"
+          alt="logo"
+          width="30"
+          height="30"
+        />
+      </a>
       <button
         class="navbar-toggler"
         type="button"
@@ -16,13 +23,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <router-link class="nav-link" to="/">Home</router-link>
+            <router-link class="nav-link" to="/">Домашняя</router-link>
           </li>
+
           <li class="nav-item">
-            <router-link class="nav-link" to="/login">Login</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/signup">Signup</router-link>
+            <router-link class="nav-link" to="/itemreg">
+              Добавление товара
+            </router-link>
           </li>
           <li class="nav-item dropdown">
             <a
@@ -33,44 +40,58 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              Dropdown
+              Авторизация
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li>
-                <router-link class="dropdown-item" to="/itemreg">
-                  New Item Registration
+                <router-link class="dropdown-item" to="/login">
+                  Вход
                 </router-link>
               </li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
               <li><hr class="dropdown-divider" /></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
+              <li>
+                <router-link class="dropdown-item" to="/signup">
+                  Регистрация
+                </router-link>
+              </li>
             </ul>
           </li>
-          <li class="nav-item">
-            <a
-              class="nav-link disabled"
-              href="#"
-              tabindex="-1"
-              aria-disabled="true"
-            >
-              Disabled
-            </a>
-          </li>
         </ul>
-        <form class="d-flex">
+        <form class="d-flex" v-on:submit.prevent="submitForm()">
           <input
             class="form-control me-2"
             type="search"
-            placeholder="Search"
+            placeholder="Название товара"
             aria-label="Search"
+            v-model="search.itemName"
           />
-          <button class="btn btn-outline-success" type="submit">Search</button>
+          <button class="btn btn-outline-success" type="submit">Поиск</button>
         </form>
       </div>
     </div>
   </nav>
 </template>
 
-<script>
-export default {}
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useSearchDataStore } from '../stores/SearchData'
+
+const router = useRouter()
+
+const store = useSearchDataStore()
+
+const search = ref({
+  itemName: ''
+})
+async function submitForm() {
+  const response = await fetch(
+    `http://localhost/ItemSingleRetrievement.php?itemName=${search.value.itemName}`
+  )
+  const data = await response.json()
+
+  router.push({ path: '/singleitem' }).then(() => {
+    store.writeData(data)
+  })
+}
 </script>

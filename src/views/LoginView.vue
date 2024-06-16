@@ -2,9 +2,14 @@
   <div class="container">
     <div class="row">
       <div class="col-md-6 offset-md-3">
-        <h2 class="text-center text-dark mt-5 text-uppercase">Login</h2>
+        <h2 class="text-center text-dark mt-5 text-uppercase">
+          Вход в систему
+        </h2>
         <div class="card my-5">
-          <form class="card-body cardbody-color p-lg-5">
+          <form
+            class="card-body cardbody-color p-lg-5"
+            v-on:submit.prevent="submitForm()"
+          >
             <div class="text-center"></div>
 
             <div class="mb-3">
@@ -14,7 +19,8 @@
                 class="form-control"
                 id="Email"
                 aria-describedby="emailHelp"
-                placeholder="Email"
+                placeholder="Электронная почта"
+                v-model="user.email"
               />
             </div>
             <div class="mb-3">
@@ -22,18 +28,19 @@
                 type="password"
                 class="form-control"
                 id="password"
-                placeholder="Password"
+                placeholder="Пароль"
+                v-model="user.password"
               />
             </div>
             <div class="text-center">
               <button type="submit" class="btn btn-color px-5 mt-3 mb-5 w-50">
-                Log in
+                Войти
               </button>
             </div>
-            <div id="emailHelp" class="form-text text-center mb-1 text-dark">
-              Not Registered?
+            <div class="form-text text-center mb-1 text-dark">
+              У Вас нет учетной записи?
               <router-link class="text-dark fw-bold" to="/signup">
-                Sign Up
+                Зарегистрироваться
               </router-link>
             </div>
           </form>
@@ -43,8 +50,25 @@
   </div>
 </template>
 
-<script>
-export default {}
+<script setup>
+import { ref } from 'vue'
+
+const user = ref({
+  email: '',
+  password: ''
+})
+async function submitForm() {
+  console.log(JSON.stringify({ user }))
+  const response = await fetch(
+    'http://localhost/Authentication/Authentication.php',
+    {
+      method: 'POST',
+      body: JSON.stringify({ user })
+    }
+  )
+  const data = await response.json()
+  console.log(data)
+}
 </script>
 
 <style scoped>

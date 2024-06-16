@@ -81,7 +81,7 @@
                 class="btn btn-color px-5 mt-3 mb-5 w-50"
               />
             </div>
-            <div id="emailHelp" class="form-text text-center mb-1 text-dark">
+            <div class="form-text text-center mb-1 text-dark">
               У Вас уже есть аккаунт?
               <router-link class="text-dark fw-bold" to="/login">
                 Войти
@@ -92,7 +92,6 @@
       </div>
     </div>
   </div>
-  <div>{{ v$.$errors }}</div>
 </template>
 
 <script setup>
@@ -126,6 +125,16 @@ const v$ = useVuelidate(rules, user, { $lazy: true, $autoDirty: true })
 async function submitForm() {
   const formIsCorrect = await this.v$.$validate()
   if (!formIsCorrect) return
+  console.log(JSON.stringify({ user }))
+  const response = await fetch(
+    'http://localhost/Authentication/Registration.php',
+    {
+      method: 'POST',
+      body: JSON.stringify({ user })
+    }
+  )
+  const data = await response.json()
+  console.log(data)
 }
 </script>
 
