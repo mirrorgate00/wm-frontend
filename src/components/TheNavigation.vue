@@ -57,7 +57,11 @@
             </ul>
           </li>
         </ul>
-        <form class="d-flex" v-on:submit.prevent="submitForm()">
+        <form class="d-flex input-icon" v-on:submit.prevent="submitForm()">
+          <SpeechToTextRecog
+            class="mircro-icon"
+            @start-speech-recog="receiveSpeechToTextEmit"
+          ></SpeechToTextRecog>
           <input
             class="form-control me-2"
             type="search"
@@ -76,17 +80,23 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSearchDataStore } from '../stores/SearchData'
+import SpeechToTextRecog from './SpeechToTextRecog.vue'
 
 const router = useRouter()
-
 const store = useSearchDataStore()
-
 const search = ref({
   itemName: ''
 })
+
+function receiveSpeechToTextEmit(value) {
+  search.value.itemName = value._rawValue.transcription[0]
+  console.log(value._rawValue.transcription)
+  console.log(search.value.itemName)
+}
 async function submitForm() {
+  const userName = localStorage.getItem('userName')
   const response = await fetch(
-    `http://localhost/ItemSingleRetrievement.php?itemName=${search.value.itemName}`
+    `http://localhost/ItemSingleRetrievement.php?itemName=${search.value.itemName}&userName=${userName}`
   )
   const data = await response.json()
 
@@ -95,3 +105,9 @@ async function submitForm() {
   })
 }
 </script>
+
+<style>
+.micro-icon {
+  margin-top: 20px;
+}
+</style>

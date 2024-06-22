@@ -181,7 +181,8 @@ const item = ref({
   prodDate: '',
   expDate: '',
   sellPrice: '',
-  purchasePrice: ''
+  purchasePrice: '',
+  userName: localStorage.getItem('userName')
 })
 async function submitForm() {
   console.log(JSON.stringify({ item }))

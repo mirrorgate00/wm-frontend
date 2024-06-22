@@ -68,6 +68,7 @@ async function submitForm() {
   )
   const data = await response.json()
   console.log(data)
+  localStorage.setItem('userName', data.username)
 }
 </script>
 

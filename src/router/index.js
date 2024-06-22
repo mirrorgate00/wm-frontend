@@ -5,6 +5,7 @@ import SignupView from '@/views/SignupView.vue'
 import ItemRegView from '@/views/ItemRegView.vue'
 import ItemSingleView from '@/views/ItemSingleView.vue'
 import ItemAllView from '@/views/ItemAllView.vue'
+import SpeechToTextRecog from '@/components/SpeechToTextRecog.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,11 @@ const router = createRouter({
       path: '/allitems',
       name: 'all items',
       component: ItemAllView
+    },
+    {
+      path: '/stt',
+      name: 'speach-to-text',
+      component: SpeechToTextRecog
     }
   ]
 })
